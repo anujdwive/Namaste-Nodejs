@@ -1,0 +1,15 @@
+{
+  "name": "Chapter-4-Module",
+  "version": "1.0.0",
+  "description": "A module for demonstrating Node.js functionalities",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Anuj Dey",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {}
+}
