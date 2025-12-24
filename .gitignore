@@ -1,0 +1,32 @@
+#paytm
+# /paytm
+/config/database.js
+/config/gmail_config.js
+
+# Node build artifacts
+node_modules
+npm-debug.log
+
+# Local development
+*.dev
+.DS_Store
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+
+.history
+
+# package-lock.json
+.package-lock.json
+
+# env
+.env
+
+coverage

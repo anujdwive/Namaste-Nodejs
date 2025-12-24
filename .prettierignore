@@ -1,0 +1,19 @@
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all HTML files:
+**/*.html
+
+# Ignore backend documentation files
+apidoc/
+backend-app.yaml
+
+# Ignore files and scripts from src
+src/files
+src/scripts
+src/views
+src/utils
+
+# ignore npm files
+package-lock.json
