@@ -45,22 +45,31 @@ const PORT = 3000;
 // );
 
 // We can also define middlewares in array format
-app.use(
-  "/user",
-  [
-    (req, res, next) => {
-      console.log("First Response from first middleware");
-      next(); // Pass control to the next middleware
-    },
-    (req, res, next) => {
-      console.log("First middleware for /user");
-      next();
-    },
-  ],
-  (req, res) => {
-    res.send("User route");
-  }
-);
+// app.use(
+//   "/user",
+//   [
+//     (req, res, next) => {
+//       console.log("First Response from first middleware");
+//       next(); // Pass control to the next middleware
+//     },
+//     (req, res, next) => {
+//       console.log("First middleware for /user");
+//       next();
+//     },
+//   ],
+//   (req, res) => {
+//     res.send("User route");
+//   }
+// );
+
+// Or we can define them separately like this:
+app.use("/user", (req, res, next) => {
+  console.log("First Response from first middleware");
+  next(); // Pass control to the next middleware
+});
+app.use("/user", (req, res, next) => {
+  res.send("User route");
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
