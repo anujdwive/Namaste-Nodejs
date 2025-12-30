@@ -63,12 +63,41 @@ const PORT = 3000;
 // );
 
 // Or we can define them separately like this:
-app.use("/user", (req, res, next) => {
-  console.log("First Response from first middleware");
-  next(); // Pass control to the next middleware
+// app.use("/user", (req, res, next) => {
+//   console.log("First Response from first middleware");
+//   next(); // Pass control to the next middleware
+// });
+// app.use("/user", (req, res, next) => {
+//   res.send("User route");
+// });
+
+// ********* MIDDLEWARE EXAMPLE *********
+
+// What is Middleware ? why we use it?
+// Middleware is a function that has access to the request object (req), the response object (res), and the next middleware function in the application’s request-response cycle.
+// We use middleware to perform tasks such as logging, authentication, parsing request bodies, handling errors, and more.
+
+// Example of a simple Authentication middleware
+
+const { adminAuth, userAuth } = require("./middlewares/auth");
+
+app.use("/admin", adminAuth);
+
+app.get("/user/login", (req, res) => {
+  res.send("User Loged In");
 });
-app.use("/user", (req, res, next) => {
-  res.send("User route");
+
+// We can provide middleware functinalty for perticuler route
+app.get("/user/user-data", userAuth, (req, res) => {
+  res.send("Sensitive user data");
+});
+
+app.get("/admin/get-data", (req, res) => {
+  res.send("Sensitive admin data");
+});
+
+app.get("/admin/delete-data", (req, res) => {
+  res.send("Sensitive admin data deleted");
 });
 
 app.listen(PORT, () => {
