@@ -39,6 +39,20 @@ app.delete("/user", async (req, res) => {
   }
 });
 
+// Update data
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  try {
+    await User.findByIdAndUpdate({ _id: userId }, data, {
+      returnDocument: "before",
+    }); // if we write the last field which is called "option" that have two value before and after that means if you write before(give the data of before updation) and for after(give the data of after updation)
+    res.send("User Data Updated Successfully");
+  } catch (err) {
+    res.status(400).send("Somthing Went Wrong");
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("Database connected...");
