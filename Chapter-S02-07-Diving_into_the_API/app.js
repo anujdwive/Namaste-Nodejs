@@ -27,6 +27,18 @@ app.get("/user", async (req, res) => {
   }
 });
 
+// Delete data by id
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+
+  try {
+    const users = await User.findByIdAndDelete(userId); // userId is the short hand of {_id: userId}
+    res.send("User Deleted Successfully");
+  } catch (err) {
+    res.status(400).send("Something Went Wrong");
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("Database connected...");
