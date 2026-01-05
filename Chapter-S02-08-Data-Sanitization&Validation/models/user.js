@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,6 +18,11 @@ const userSchema = new mongoose.Schema(
       unique: true, // if you write any duplicate email it throw error
       trim: true, // if you write any space it trim the email remove all spaces
       required: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Email not correct" + err);
+        }
+      },
     },
     password: {
       type: String,
