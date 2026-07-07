@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const app = express();
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auth");
 const PORT = 3000;
 
 app.use(express.json());
@@ -52,7 +53,9 @@ app.post("/login", async (req, res) => {
     if (isPasswordValid) {
       // Create Jwt Token
 
-      const token = jwt.sign({ _id: user._id }, "DEV@Tinder123");
+      const token = jwt.sign({ _id: user._id }, "DEV@Tinder123", {
+        expiresIn: "7d",
+      });
 
       // Add the token to cookie and send the response back to user
       /* JWT + cookies flow (in simple words):
@@ -66,7 +69,9 @@ app.post("/login", async (req, res) => {
         👉 In short: JWT stores user identity, cookies carry it between client and server automatically. 
       */
 
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 3600000),
+      });
 
       res.send("Login Successfully!");
     } else {
@@ -78,22 +83,9 @@ app.post("/login", async (req, res) => {
 });
 
 //Profile
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    const cookie = req.cookies;
-    const { token } = cookie;
-
-    if (!token) {
-      throw new Error("The token is not valid");
-    }
-
-    //Validate the token
-    const decodedMessage = await jwt.verify(token, "DEV@Tinder123");
-    const { _id } = decodedMessage;
-    const user = await User.findById(_id);
-    if (!user) {
-      throw new Error("The user not found");
-    }
+    const user = req.user;
     res.send(user);
   } catch (error) {
     res.status(500).send("ERROR: " + error.message);

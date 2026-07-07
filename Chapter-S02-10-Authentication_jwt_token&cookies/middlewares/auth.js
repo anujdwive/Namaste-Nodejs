@@ -1,21 +1,25 @@
-const adminAuth = (req, res, next) => {
-  const token = "mysecrettoken"; // In real-world applications, tokens are usually sent in headers or cookies.
-  const isAuthenticated = token === "mysecrettoken"; // For simplicity, we are using query parameters here.
-  if (!isAuthenticated) {
-    res.status(401).send("Unauthorized: Invalid token");
-  } else {
-    next(); // Pass control to the next middleware or route handler
-  }
-};
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-const userAuth = (req, res, next) => {
-  const token = "usertoken";
-  const isAuthenticated = token === "usertoken";
-  if (!isAuthenticated) {
-    res.status(401).send("Unauthorized: Invalid token");
-  } else {
+const userAuth = async (req, res, next) => {
+  try {
+    const { token } = req.cookies;
+
+    if (!token) {
+      throw new Error("The token not valid!");
+    }
+
+    const decodedObj = await jwt.verify(token, "DEV@Tinder123");
+    const { _id } = decodedObj;
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User not found!");
+    }
+    req.user = user;
     next();
+  } catch (error) {
+    res.status(500).send("ERROR: " + error.message);
   }
 };
 
-module.exports = { adminAuth, userAuth };
+module.exports = { userAuth };
