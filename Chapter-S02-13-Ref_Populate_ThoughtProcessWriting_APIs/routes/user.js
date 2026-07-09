@@ -4,15 +4,35 @@ const ConnectionRequest = require("../models/connectionRequest");
 
 const userRoute = express.Router();
 
+const USER_SAFE_DATA = "firstName lastName gender about photoURL skill";
+
 userRoute.get("/user/request/received", userAuth, async (req, res) => {
   try {
     const logedInUser = req.user;
     const connectionRequest = await ConnectionRequest.find({
       toUserId: logedInUser._id,
       status: "intrested",
-    }).populate("fromUserId", "firstName lastName gender about photoURL skill"); // you can write like this also populate("fromUserId", ["firstName", "lastName", "gender", "about", "photoURL", "skill"])
+    }).populate("fromUserId", USER_SAFE_DATA); // you can write like this also populate("fromUserId", ["firstName", "lastName", "gender", "about", "photoURL", "skill"])
 
     res.json({ message: "Data fetched successfuly!", data: connectionRequest });
+  } catch (error) {
+    res.status(500).send("ERROR: " + error.message);
+  }
+});
+
+userRoute.get("/user/connections", userAuth, async (req, res) => {
+  try {
+    const logedInUser = req.user;
+    const connectionRequest = await ConnectionRequest.find({
+      $or: [
+        { toUserId: logedInUser._id, status: "accepted" },
+        { fromUserId: logedInUser._id, status: "accepted" },
+      ],
+    }).populate("fromUserId", USER_SAFE_DATA);
+
+    const data = connectionRequest.map((row) => row.fromUserId);
+
+    res.json({ data });
   } catch (error) {
     res.status(500).send("ERROR: " + error.message);
   }
